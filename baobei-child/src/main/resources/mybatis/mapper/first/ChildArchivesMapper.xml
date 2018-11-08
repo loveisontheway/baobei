@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yaozhitech.baobei.child.mapper.first.ChildArchivesMapper">
+  <resultMap id="BaseResultMap" type="com.yaozhitech.baobei.child.domain.ChildArchives">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="height" jdbcType="INTEGER" property="height" />
+    <result column="card_type" jdbcType="INTEGER" property="cardType" />
+    <result column="idcard" jdbcType="VARCHAR" property="idcard" />
+    <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="passport_no" jdbcType="VARCHAR" property="passportNo" />
+    <result column="medal" jdbcType="INTEGER" property="medal" />
+    <result column="seal" jdbcType="INTEGER" property="seal" />
+    <result column="gold_seal" jdbcType="INTEGER" property="goldSeal" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="nature" jdbcType="VARCHAR" property="nature" />
+    <result column="nature_remark" jdbcType="VARCHAR" property="natureRemark" />
+    <result column="interest" jdbcType="VARCHAR" property="interest" />
+    <result column="interest_remark" jdbcType="VARCHAR" property="interestRemark" />
+    <result column="family" jdbcType="VARCHAR" property="family" />
+    <result column="family_remark" jdbcType="VARCHAR" property="familyRemark" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="school" jdbcType="VARCHAR" property="school" />
+    <result column="grade" jdbcType="VARCHAR" property="grade" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="parents" jdbcType="VARCHAR" property="parents" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="crt_time" jdbcType="TIMESTAMP" property="crtTime" />
+    <result column="upd_time" jdbcType="TIMESTAMP" property="updTime" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="pics" jdbcType="VARCHAR" property="pics" />
+    <result column="organ" jdbcType="VARCHAR" property="organ" />
+    <result column="birthday_sms" jdbcType="DATE" property="birthdaySms" />
+    <result column="weight" jdbcType="NUMERIC" property="weight" />
+    <result column="fans" jdbcType="INTEGER" property="fans" />
+    <result column="passport_name" jdbcType="VARCHAR" property="passportName" />
+    <result column="otherinfo" jdbcType="VARCHAR" property="otherinfo" />
+    <result column="child_cardinfo" jdbcType="VARCHAR" property="childCardinfo" />
+    <result column="body_type" jdbcType="INTEGER" property="bodyType" />
+    <result column="price" jdbcType="NUMERIC" property="price" />
+    <result column="disabled" jdbcType="INTEGER" property="disabled" />
+  </resultMap>
+
+  <!-- 查询年卡新增排名-各城市年卡个数 -->
+  <select id="list" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    SELECT * FROM zhima.child_archives
+    LIMIT #{arg1} OFFSET #{arg0}
+  </select>
+</mapper>
