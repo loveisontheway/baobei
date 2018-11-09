@@ -1,7 +1,7 @@
 package ${basePackage}.web;
 
 import ${basePackage}.domain.${domainNameUpperCamel};
-import ${basePackage}.service.${domainNameUpperCamel}Service;
+import ${basePackage}.service.first.${domainNameUpperCamel}Service;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

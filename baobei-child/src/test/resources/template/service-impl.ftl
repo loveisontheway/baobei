@@ -1,8 +1,8 @@
-package ${basePackage}.service.impl;
+package ${basePackage}.service.first.impl;
 
-import ${basePackage}.mapper.${domainNameUpperCamel}Mapper;
+import ${basePackage}.mapper.first.${domainNameUpperCamel}Mapper;
 import ${basePackage}.domain.${domainNameUpperCamel};
-import ${basePackage}.service.${domainNameUpperCamel}Service;
+import ${basePackage}.service.first.${domainNameUpperCamel}Service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.lang.${pkDataType};

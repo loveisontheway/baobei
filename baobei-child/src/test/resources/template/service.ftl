@@ -1,4 +1,5 @@
-package ${basePackage}.service;
+package ${basePackage}.service.first;
+
 import ${basePackage}.domain.${domainNameUpperCamel};
 import java.util.List;
 import java.lang.${pkDataType};

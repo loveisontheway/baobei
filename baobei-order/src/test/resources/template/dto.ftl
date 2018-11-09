@@ -1,4 +1,5 @@
 package ${basePackage}.dto;
+
 import ${basePackage}.domain.${domainNameUpperCamel};
 
 /**
