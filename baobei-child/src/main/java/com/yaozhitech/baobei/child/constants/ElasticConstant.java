@@ -5,7 +5,7 @@ package com.yaozhitech.baobei.child.constants;
  *
  * @author jiangjialiang on 2018/11/06
  */
-public final class ESConstant {
+public final class ElasticConstant {
     public static final String CLUST_NAME = "baobei-es";     /** 集群名称 */
     public static final String INDEX_NAME = "child";         /** 索引名称 */
     public static final String CLUST_IP = "120.55.124.69";   /** ip */

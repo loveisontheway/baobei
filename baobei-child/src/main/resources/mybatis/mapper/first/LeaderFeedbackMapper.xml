@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yaozhitech.baobei.child.mapper.first.LeaderFeedbackMapper">
+	<resultMap id="BaseResultMap" type="com.yaozhitech.baobei.child.domain.LeaderFeedback">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="aid" jdbcType="VARCHAR" property="aid" />
+		<result column="sid" jdbcType="INTEGER" property="sid" />
+		<result column="signin_img" jdbcType="VARCHAR" property="signinImg" />
+		<result column="leader_img" jdbcType="VARCHAR" property="leaderImg" />
+		<result column="child_leader_insurance_img" jdbcType="VARCHAR" property="childLeaderInsuranceImg" />
+		<result column="white_book_img" jdbcType="VARCHAR" property="whiteBookImg" />
+		<result column="alltuu" jdbcType="INTEGER" property="alltuu" />
+		<result column="poster" jdbcType="INTEGER" property="poster" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="bus_img" jdbcType="VARCHAR" property="busImg" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="uid" jdbcType="VARCHAR" property="uid" />
+		<result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+	</resultMap>
+
+	<resultMap id="dtoMap" type="com.yaozhitech.baobei.child.dto.LeaderFeedbackDTO">
+		<id column="id" jdbcType="INTEGER" property="id" />
+		<result column="aid" jdbcType="VARCHAR" property="aid" />
+		<result column="sid" jdbcType="INTEGER" property="sid" />
+		<result column="signin_img" jdbcType="VARCHAR" property="signinImg" />
+		<result column="leader_img" jdbcType="VARCHAR" property="leaderImg" />
+		<result column="child_leader_insurance_img" jdbcType="VARCHAR" property="childLeaderInsuranceImg" />
+		<result column="white_book_img" jdbcType="VARCHAR" property="whiteBookImg" />
+		<result column="alltuu" jdbcType="INTEGER" property="alltuu" />
+		<result column="poster" jdbcType="INTEGER" property="poster" />
+		<result column="remark" jdbcType="VARCHAR" property="remark" />
+		<result column="bus_img" jdbcType="VARCHAR" property="busImg" />
+		<result column="status" jdbcType="INTEGER" property="status" />
+		<result column="uid" jdbcType="VARCHAR" property="uid" />
+		<result column="nick_name" jdbcType="VARCHAR" property="nickName" />
+		<result column="crt_time" jdbcType="TIMESTAMP" property="crtTime" />
+		<result column="title" jdbcType="VARCHAR" property="title" />
+		<result column="sname" jdbcType="VARCHAR" property="sname" />
+		<result column="num" jdbcType="INTEGER" property="num" />
+		<!--<association property="title" column="aid" select="getArticleTitleByAid"></association>-->
+		<!--<association property="sname" column="sid" select="getSessionNameBySid"></association>-->
+		<association property="leaderName" column="sid" select="getLeaderNamesBySid"></association>
+		<collection property="complaintList" column="{fid=id}"
+					select="com.yaozhitech.baobei.child.mapper.first.LeaderFeedbackMapper.getLeaderFeedbackComplaintList"/>
+	</resultMap>
+
+	<!-- 根据条件获取负责人反馈表条目数 -->
+	<select id="getLeaderFeedbackTotal" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT count(*) FROM zhima.leader_feedback f
+		LEFT JOIN zhima.articles a ON a.aid = f.aid
+		LEFT JOIN zhima."session" s ON s.sid = f.sid
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			f.status != 1
+			<!--AND a.status NOT IN (4,5)-->
+			<!--AND s.status != 1-->
+			<if test="userAreas != null">
+				AND (position('全国' in a.cities) > 0
+				<foreach collection="userAreas" item="item" close=")" separator=" ">
+					OR a.cities like #{item.title}
+				</foreach>
+			</if>
+			<if test="city != null and city != ''">
+				AND position(#{city} in a.cities) > 0
+			</if>
+			<if test="title != null and title != ''">
+				AND (position(#{title} in a.title) > 0 OR position(#{title} in s.name) > 0)
+			</if>
+			<if test="nickname != null and nickname != ''">
+				AND (
+					SELECT
+						string_agg(concat_ws('-', u.nickname, u.real_name),'、') AS leaderName
+					FROM zhima.users u
+					WHERE user_type = 'l' AND u.user_id IN (
+						SELECT lr.uid FROM zhima.leader_room_relation lr
+						WHERE lr.live_id IN (
+							SELECT r.id FROM zhima.live_room r
+							WHERE r.sid = f.sid
+						)
+						AND lr.duty IN (3, 5)
+					)
+					AND (position(#{nickname} in u.nickname) > 0 OR position(#{nickname} in u.real_name) > 0)
+				) IS NOT NULL
+			</if>
+			<if test="remark != null and remark != ''">
+				AND f.remark LIKE CONCAT('%',#{remark},'%')
+			</if>
+			<if test="startTime != null and startTime != ''">
+				AND s.deadline >= #{startTime}::TIMESTAMP
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND s.deadline <![CDATA[<=]]> #{endTime}::TIMESTAMP
+			</if>
+			<if test="parms != null">
+				<if test="parms == '0'.toString() or parms == '1'.toString() ">
+					AND f.alltuu = ${parms}
+				</if>
+				<if test="parms == '2'.toString()">
+					AND f.poster = 1
+				</if>
+				<if test="parms == '3'.toString()">
+					AND f.poster = 0
+				</if>
+				<if test="parms == '4'.toString()">
+					AND (SELECT count(fc.pic) FROM zhima.leader_feedback_complaint fc WHERE fc.fid = f.id AND fc.pic IS NOT NULL) > 0
+				</if>
+				<if test="parms == '5'.toString()">
+					AND (SELECT count(fc.pic) FROM zhima.leader_feedback_complaint fc WHERE fc.fid = f.id) = 0
+				</if>
+				<if test="parms == '6'.toString()">
+					AND (f.bus_img IS NOT NULL AND f.bus_img != '')
+				</if>
+				<if test="parms == '7'.toString()">
+					AND (f.bus_img IS NULL OR f.bus_img = '')
+				</if>
+			</if>
+		</trim>
+	</select>
+
+	<!-- 根据条件获取负责人反馈列表 -->
+	<select id="getLeaderFeedbackList" parameterType="java.util.Map" resultMap="dtoMap">
+		SELECT
+			f.*
+			,a.title
+			,a.cities
+			,s."name" AS sname
+			,(SELECT count(c.fid) FROM zhima.leader_feedback_complaint c WHERE c.fid = f.id) AS num
+		FROM zhima.leader_feedback f
+		LEFT JOIN zhima.articles a ON a.aid = f.aid
+		LEFT JOIN zhima."session" s ON s.sid = f.sid
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			f.status != 1
+			<!--AND a.status NOT IN (4,5)-->
+			<!--AND s.status != 1-->
+			<if test="userAreas != null">
+				AND (position('全国' in a.cities) > 0
+				<foreach collection="userAreas" item="item" close=")" separator=" ">
+					OR a.cities like #{item.title}
+				</foreach>
+			</if>
+			<if test="city != null and city != ''">
+				AND position(#{city} in a.cities) > 0
+			</if>
+			<if test="title != null and title != ''">
+				AND (position(#{title} in a.title) > 0 OR position(#{title} in s.name) > 0)
+			</if>
+			<if test="nickname != null and nickname != ''">
+				AND (
+					SELECT
+						string_agg(concat_ws('-', u.nickname, u.real_name),'、') AS leaderName
+					FROM zhima.users u
+					WHERE user_type = 'l' AND u.user_id IN (
+						SELECT lr.uid FROM zhima.leader_room_relation lr
+						WHERE lr.live_id IN (
+							SELECT r.id FROM zhima.live_room r
+							WHERE r.sid = f.sid
+						)
+						AND lr.duty IN (3, 5)
+					)
+					AND (position(#{nickname} in u.nickname) > 0 OR position(#{nickname} in u.real_name) > 0)
+				) IS NOT NULL
+			</if>
+			<if test="remark != null and remark != ''">
+				AND f.remark LIKE CONCAT('%',#{remark},'%')
+			</if>
+			<if test="startTime != null and startTime != ''">
+				AND s.deadline >= #{startTime}::TIMESTAMP
+			</if>
+			<if test="endTime != null and endTime != ''">
+				AND s.deadline <![CDATA[<=]]> #{endTime}::TIMESTAMP
+			</if>
+			<if test="parms != null">
+				<if test="parms == '0'.toString() or parms == '1'.toString() ">
+					AND f.alltuu = ${parms}
+				</if>
+				<if test="parms == '2'.toString()">
+					AND f.poster = 1
+				</if>
+				<if test="parms == '3'.toString()">
+					AND f.poster = 0
+				</if>
+				<if test="parms == '4'.toString()">
+					AND (SELECT count(fc.pic) FROM zhima.leader_feedback_complaint fc WHERE fc.fid = f.id AND fc.pic IS NOT NULL) > 0
+				</if>
+				<if test="parms == '5'.toString()">
+					AND (SELECT count(fc.pic) FROM zhima.leader_feedback_complaint fc WHERE fc.fid = f.id) = 0
+				</if>
+				<if test="parms == '6'.toString()">
+					AND (f.bus_img IS NOT NULL AND f.bus_img != '')
+				</if>
+				<if test="parms == '7'.toString()">
+					AND (f.bus_img IS NULL OR f.bus_img = '')
+				</if>
+			</if>
+		</trim>
+		ORDER BY f.crt_time DESC
+		<if test="pageIndex != null">
+			LIMIT #{pageSize} OFFSET #{pageIndex}
+		</if>
+	</select>
+
+	<!-- 根据场次id获取领队名称（昵称+真实姓名） -->
+	<select id="getLeaderNamesBySid" parameterType="java.lang.Integer" resultType="java.lang.String">
+		SELECT
+			string_agg(concat_ws('-', u.nickname, u.real_name),'、') AS leaderName
+		FROM zhima.users u
+		WHERE user_type = 'l' AND u.user_id IN (
+			SELECT lr.uid FROM zhima.leader_room_relation lr
+			WHERE lr.live_id IN (
+				SELECT r.id FROM zhima.live_room r
+				WHERE r.sid = #{sid}
+			)
+			AND lr.duty IN (3, 5)
+		)
+	</select>
+
+	<!--删除（修改状态值）-->
+	<update id="update" parameterType="java.lang.Integer">
+		UPDATE zhima.leader_feedback
+		<trim prefix="set" suffixOverrides=",">
+			status = 1,
+			upd_time = now()
+		</trim>
+		WHERE id = #{id}
+	</update>
+
+	<select id="getArticleTitleByAid" parameterType="java.lang.String" resultType="java.lang.String">
+		SELECT title FROM zhima.articles
+		WHERE aid = #{aid}
+	</select>
+
+	<select id="getSessionNameBySid" parameterType="java.lang.Integer" resultType="java.lang.String">
+		SELECT name AS sname FROM zhima.session
+		WHERE sid = #{sid}
+	</select>
+
+	<!-- 根据条件获取投诉情况条目数 -->
+	<select id="getLeaderFeedbackComplaintTotal" parameterType="java.util.Map" resultType="java.lang.Integer">
+		SELECT count(*) FROM zhima.leader_feedback_complaint
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="fid != null">
+				fid = #{fid}
+			</if>
+		</trim>
+	</select>
+
+	<!-- 根据条件获取投诉情况列表 -->
+	<select id="getLeaderFeedbackComplaintList" parameterType="java.util.Map" resultType="com.yaozhitech.baobei.child.domain.LeaderFeedbackComplaint">
+		SELECT * FROM zhima.leader_feedback_complaint
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="fid != null">
+				fid = #{fid}
+			</if>
+		</trim>
+		<if test="pageIndex != null">
+			LIMIT #{pageSize} OFFSET #{pageIndex}
+		</if>
+	</select>
+
+</mapper>

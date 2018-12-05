@@ -1,16 +1,14 @@
-package com.yaozhitech.baobei.child;
+package com.yaozhitech.baobei.cache;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableEurekaClient
-@EnableFeignClients
-public class BaobeiChildApplication {
+public class BaobeiCacheApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(BaobeiChildApplication.class, args);
+		SpringApplication.run(BaobeiCacheApplication.class, args);
 	}
 }
