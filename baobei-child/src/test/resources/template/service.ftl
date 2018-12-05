@@ -1,4 +1,4 @@
-package ${basePackage}.service.first;
+package ${servicePackage};
 
 import ${basePackage}.domain.${domainNameUpperCamel};
 import java.util.List;

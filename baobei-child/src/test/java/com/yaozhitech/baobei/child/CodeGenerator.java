@@ -185,6 +185,9 @@ public class CodeGenerator {
             data.put("domainNameUpperCamel", domainNameUpperCamel);
             data.put("domainNameLowerCamel", tableNameConvertLowerCamel(tableName));
             data.put("basePackage", ProjectConstant.BASE_PACKAGE);
+            data.put("servicePackage", ProjectConstant.SERVICE_PACKAGE);
+            data.put("serviceImplPackage", ProjectConstant.SERVICE_IMPL_PACKAGE);
+            data.put("mapperPackage", ProjectConstant.MAPPER_PACKAGE);
 
             File file = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_SERVICE + domainNameUpperCamel + "Service.java");
             if (!file.getParentFile().exists()) {
@@ -220,6 +223,7 @@ public class CodeGenerator {
             data.put("domainNameUpperCamel", domainNameUpperCamel);
             data.put("domainNameLowerCamel", CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, domainNameUpperCamel));
             data.put("basePackage", ProjectConstant.BASE_PACKAGE);
+            data.put("servicePackage", ProjectConstant.SERVICE_PACKAGE);
 
             File file = new File(PROJECT_PATH + JAVA_PATH + PACKAGE_PATH_CONTROLLER + domainNameUpperCamel + "Controller.java");
             if (!file.getParentFile().exists()) {
