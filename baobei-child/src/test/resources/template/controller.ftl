@@ -52,7 +52,7 @@ public class ${domainNameUpperCamel}Controller {
     })
     @GetMapping("/detail")
     public ${domainNameUpperCamel} selectByPrimaryKey(@RequestParam ${pkDataType} id) {
-${domainNameUpperCamel} ${domainNameLowerCamel} = ${domainNameLowerCamel}Service.selectByPrimaryKey(id);
+        ${domainNameUpperCamel} ${domainNameLowerCamel} = ${domainNameLowerCamel}Service.selectByPrimaryKey(id);
         return ${domainNameLowerCamel};
     }
 
