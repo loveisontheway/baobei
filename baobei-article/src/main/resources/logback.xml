@@ -2,7 +2,7 @@
 <configuration debug="false" scan="true" scanPeriod="1 seconds">
 
     <contextName>logback</contextName>
-    <property name="log.path" value="/Users/loveisontheway/logs/baobei-article/baobei-article.log"/>
+    <property name="log.path" value="${user.name}/logs/baobei-article/baobei-article.log"/>
 
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
